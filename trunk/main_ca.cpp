@@ -47,6 +47,7 @@ int main(int argc, char** argv)
 
     /* Get this processes host name */
     string thishostname = findhostname();
+    cout << "I am host: " << thishostname << endl;
 
     /* Load the private key */
     FILE* fp = fopen((string("keys/")+(thishostname) + string(".pem")).c_str(), "r");
@@ -54,7 +55,7 @@ int main(int argc, char** argv)
     fclose(fp);
 
     /* Load the public key */
-    fp = fopen((string("certs/")+(thishostname) + string(".cert")).c_str(), "r");
+    fp = fopen((string("certs/")+(thishostname) + string(".crt")).c_str(), "r");
     pub_key = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
     fclose(fp);
 
@@ -62,7 +63,7 @@ int main(int argc, char** argv)
     int i = 0;
     for (it = hosts.begin(); it != hosts.end(); it++)
     {
-        fp = fopen((string("certs/")+(*it) + string(".cert")).c_str(), "r");
+        fp = fopen((string("certs/")+(*it) + string(".crt")).c_str(), "r");
 
         /* Get the public key for this party */
         database.insert(pair<string, RSA*>(*it,PEM_read_RSAPublicKey(fp, NULL, 0, NULL)));
