@@ -31,13 +31,22 @@ enum MSG_TYPE
     UPDATE,
     UPDATE_RESPONSE,
     MEMBER_UPDATE,
-    MEMBER_RESPONSE
+    MEMBER_RESPONSE,
+    QUERY_INTERNAL,
+    QUERY_INTERNAL_RESPONSE,
+    UPDATE_INTERNAL,
+    UPDATE_INTERNAL_RESPONSE,
+    MEMBER_UPDATE_INTERNAL,
+    MEMBER_UPDATE_INTERNAL_RESPONSE,
+    QUERY_RECEIVED_INTERNAL,
+    QUERY_RECEIVED_RESPONSE
 };
         
 struct message {
     char hostname[100]; /* The hostname of the sender */
-    char message[256]; /* The message */
     int type; /* Defines which of the union members to use */
+    char message[1024]; /* The message */
+    char argument[1024];
 };
 
 
