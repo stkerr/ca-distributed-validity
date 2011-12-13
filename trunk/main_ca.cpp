@@ -1,6 +1,7 @@
 #include "networking.h"
 #include "message_management.h"
 #include "support.h"
+#include "ca_code.h"
 
 #include <iostream>
 #include <openssl/pem.h>
@@ -35,6 +36,8 @@ int main(int argc, char** argv)
 
     /* Get the list of other hosts */
     list<string> hosts = parsefile(hostfile);
+    vector<string> host_vector;
+    list<string>::iterator it;
 
     if (hosts.size() == 0)
     {
@@ -46,13 +49,26 @@ int main(int argc, char** argv)
     string thishostname = findhostname();
 
     /* Load the private key */
-    FILE* fp = fopen(string("keys/").append(thishostname).append(".pem").c_str(), "r");
-    RSA* priv_key = PEM_read_RSAPrivateKey(fp, NULL, 0, NULL);
+    FILE* fp = fopen((string("keys/")+(thishostname) + string(".pem")).c_str(), "r");
+    priv_key = PEM_read_RSAPrivateKey(fp, NULL, 0, NULL);
     fclose(fp);
 
     /* Load the public key */
+    fp = fopen((string("certs/")+(thishostname) + string(".cert")).c_str(), "r");
+    pub_key = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
+    fclose(fp);
 
-    /* Load the database */
+    /* Load the database (certicates for all parties) */
+    int i = 0;
+    for (it = hosts.begin(); it != hosts.end(); it++)
+    {
+        fp = fopen((string("certs/")+(*it) + string(".cert")).c_str(), "r");
+
+        /* Get the public key for this party */
+        database.insert(pair<string, RSA*>(*it,PEM_read_RSAPublicKey(fp, NULL, 0, NULL)));
+
+        fclose(fp);
+    }
 
     /* Wait for commands */
     while (1)
@@ -61,11 +77,27 @@ int main(int argc, char** argv)
 
         switch (msg.type)
         {
-            case QUERY:
+            case QUERY_INTERNAL:
+            {
+                /* For this message, the msg->message field holds K_pub to verify, argument is empty */
+                query_internal(&msg);
+                break;
+            }
 
-            case UPDATE:
+            case QUERY_RECEIVED_INTERNAL:
+            {
+                break;
+            }
 
-            case MEMBER_UPDATE:
+            case UPDATE_INTERNAL:
+            {
+                break;
+            }
+
+            case MEMBER_UPDATE_INTERNAL:
+            {
+                break;
+            }
 
             default:
                 cout << "Got unexpected message type of: " << msg.type << endl;

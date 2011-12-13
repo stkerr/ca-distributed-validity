@@ -29,7 +29,9 @@ int start_networking(int port);
 std::string findhostname();
 int send_message(struct message *msg, std::string dest, int port);
 void send_to_hosts(struct message *msg, int port, std::list<std::string> hosts);
-
+bool get_next_message(int waittime, struct message * msg);
+struct message get_next_message();
+std::list<struct message> get_messages_over_time(int waittime);
 
 #endif	/* NETWORKING_H */
 

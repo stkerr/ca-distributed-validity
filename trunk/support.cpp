@@ -5,6 +5,9 @@
 #include <list>
 #include <string>
 
+map<string, RSA*> database;
+RSA *priv_key, *pub_key;
+
 /**
  * Given a file containing a list of data, one per line
  * parse the file and return the entries in a list
