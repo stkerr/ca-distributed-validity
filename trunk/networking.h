@@ -19,10 +19,14 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 extern int port;
 
 extern pthread_mutex_t mutex;
 extern std::list<struct message > received_messages;
+
+extern list<string> hosts;
 
 int start_networking(int port);
 

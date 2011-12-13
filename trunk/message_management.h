@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MESSAGE_FIELD_SIZE 1024
+
 using namespace std;
 
 /* Functions */
@@ -26,14 +28,19 @@ void render_message(struct message*);
 /* Data structures */
 enum MSG_TYPE
 {
-    QUERY,
-    QUERY_RESPONSE,
+    QUERY,              // <message, argument> => <key in question, N/A>
+    QUERY_SUCCEEDED,    // <message, argument> => <sender, signed key>
+    QUERY_FAILED,       // <message, argument> => <N/A, N/A>
+    
     UPDATE,
     UPDATE_RESPONSE,
+    
     MEMBER_UPDATE,
     MEMBER_RESPONSE,
-    QUERY_INTERNAL,
-    QUERY_INTERNAL_RESPONSE,
+    
+    QUERY_INTERNAL,             // <message, argument> => <public key, signed key>
+    QUERY_INTERNAL_RESPONSE,    // <message, argument> => <public key, signed key>
+    
     UPDATE_INTERNAL,
     UPDATE_INTERNAL_RESPONSE,
     MEMBER_UPDATE_INTERNAL,
@@ -45,8 +52,10 @@ enum MSG_TYPE
 struct message {
     char hostname[100]; /* The hostname of the sender */
     int type; /* Defines which of the union members to use */
-    char message[1024]; /* The message */
-    char argument[1024];
+    int length; /* The length argument. Used for multiple purposes. */
+    unsigned char message[MESSAGE_FIELD_SIZE]; /* The message */
+    int arg_length;
+    unsigned char argument[MESSAGE_FIELD_SIZE];
 };
 
 

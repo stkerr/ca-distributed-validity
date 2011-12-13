@@ -3,6 +3,7 @@
 #include "support.h"
 #include "ca_code.h"
 
+#include <math.h>
 #include <iostream>
 #include <openssl/pem.h>
 #include <openssl/crypto.h>
@@ -11,9 +12,9 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    if (argc != 11)
+    if (argc != 5)
     {
-        cout << "Usage: " << argv[0] << " -port PORT -hostfile hostfile -privkey PATH -pubkey PATH -database PATH" << endl;
+        cout << "Usage: " << argv[0] << " -port PORT -hostfile hostfile" << endl;
     }
 
     if (strcmp(argv[1], "-port") != 0)
@@ -35,8 +36,7 @@ int main(int argc, char** argv)
     string hostfile = string(argv[4]);
 
     /* Get the list of other hosts */
-    list<string> hosts = parsefile(hostfile);
-    vector<string> host_vector;
+    hosts = parsefile(hostfile);
     list<string>::iterator it;
 
     if (hosts.size() == 0)
@@ -44,26 +44,32 @@ int main(int argc, char** argv)
         cout << "Host input file not found!" << std::endl;
         return -1;
     }
+    else
+    {
+        cout << "N: " << hosts.size() << endl;
+        cout << "N = 2F + 2 => " << floor((hosts.size()-2)/2.0) << endl;
+        F = (int)floor((hosts.size()-2)/2.0);
+    }
 
     /* Get this processes host name */
-    string thishostname = findhostname();
+    thishostname = findhostname();
     cout << "I am host: " << thishostname << endl;
 
     /* Load the private key */
     FILE* fp = fopen((string("keys/")+(thishostname) + string(".pem")).c_str(), "r");
-    priv_key = PEM_read_RSAPrivateKey(fp, NULL, 0, NULL);
+    my_priv_key = PEM_read_RSAPrivateKey(fp, NULL, 0, NULL);
     fclose(fp);
 
     /* Load the public key */
-    fp = fopen((string("certs/")+(thishostname) + string(".crt")).c_str(), "r");
-    pub_key = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
+    fp = fopen((string("pubkeys/")+(thishostname) + string(".pem")).c_str(), "r");
+    my_pub_key = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
     fclose(fp);
 
-    /* Load the database (certicates for all parties) */
+    /* Load the database (public keys for all parties) */
     int i = 0;
     for (it = hosts.begin(); it != hosts.end(); it++)
     {
-        fp = fopen((string("certs/")+(*it) + string(".crt")).c_str(), "r");
+        fp = fopen((string("pubkeys/")+(*it) + string(".pem")).c_str(), "r");
 
         /* Get the public key for this party */
         database.insert(pair<string, RSA*>(*it,PEM_read_RSAPublicKey(fp, NULL, 0, NULL)));
@@ -78,15 +84,16 @@ int main(int argc, char** argv)
 
         switch (msg.type)
         {
-            case QUERY_INTERNAL:
+            case QUERY:
             {
                 /* For this message, the msg->message field holds K_pub to verify, argument is empty */
                 query_internal(&msg);
                 break;
             }
 
-            case QUERY_RECEIVED_INTERNAL:
+            case QUERY_INTERNAL:
             {
+                /* Execute the RECEIVE_QUERY state diagram */
                 break;
             }
 

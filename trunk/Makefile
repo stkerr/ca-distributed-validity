@@ -7,7 +7,7 @@ all: ca client
 %.o: %.cpp
 	g++ -g -c $< -o $@
 	
-ca: $(ALL_OBJ) $(CA_OBJ)
+ca: $(ALL_OBJ) $(CA_OBJ) main_ca.cpp
 	g++ -o CA -g main_ca.cpp $(ALL_OBJ) $(CA_OBJ) -lcrypto -lpthread
 	
 client: $(ALL_OBJ)
@@ -15,5 +15,6 @@ client: $(ALL_OBJ)
 	
 clean:
 	rm *.o
+	rm ca_code/*.o
 	rm CA
 	rm Client

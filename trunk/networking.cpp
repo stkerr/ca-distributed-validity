@@ -21,6 +21,8 @@ int port;
 std::list<struct message > received_messages;
 pthread_mutex_t mutex;
 
+list<string> hosts;
+
 void * networking_loop(void *arg)
 {
     /* Create the socket itself */
@@ -227,18 +229,22 @@ std::list<struct message> get_messages_over_time(int waittime)
         time_t curr_time = time(NULL);
         double diff = difftime(curr_time, timer);
 
-        if (received_messages.size() > 0)
+        pthread_mutex_lock(&mutex);
+        while (received_messages.size() > 0)
         {
             returnable.push_back(received_messages.front());
             received_messages.pop_front();
         }
-
+        pthread_mutex_lock(&mutex);
+        
         /* Time out, we're done */
         if (diff > waittime)
         {
             break;
         }
     }
+    
+    cout << "Received " << returnable.size() << " messages over " << waittime << " seconds" << endl;
 
     return returnable;
 }

@@ -5,8 +5,12 @@
 #include <list>
 #include <string>
 
+string thishostname;
+
+int F; // the amount of tolerable failures
+
 map<string, RSA*> database;
-RSA *priv_key, *pub_key;
+RSA *my_priv_key, *my_pub_key;
 
 /**
  * Given a file containing a list of data, one per line
