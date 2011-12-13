@@ -16,6 +16,8 @@ using namespace std;
 #include "message_management.h"
 #include "networking.h"
 
+#include "support.h"
+
 void query_internal(struct message *msg);
 
 #endif	/* CA_CODE_H */

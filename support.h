@@ -22,7 +22,11 @@ list<string> parsefile(string filepath);
 void write_to_file(string message);
 
 extern map<string, RSA*> database;
-extern RSA *priv_key, *pub_key;
+extern RSA *my_priv_key, *my_pub_key;
+
+extern string thishostname;
+
+extern int F;
 
 #endif	/* SUPPORT_H */
 
