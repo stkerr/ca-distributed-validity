@@ -19,6 +19,7 @@ using namespace std;
 #include "support.h"
 
 void query_internal(struct message *msg);
+void receive_query(struct message *msg);
 
 #endif	/* CA_CODE_H */
 

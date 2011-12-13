@@ -18,9 +18,10 @@ void query_internal(struct message *request)
     int state = 1;
     while (state > 0)
     {
+        cout << "I am in query_internal() state " << state << endl;;
+        
         switch (state)
         {
-                cout << "I am in query_internal() state " << state;
             case 1:
             {
                 char* buffer = (char*) malloc(sizeof (char) *request->length);
@@ -90,7 +91,7 @@ void query_internal(struct message *request)
             {
                 /* Forward the > F response back to to the client */
                 struct message msg;
-                strcpy(msg.hostname, thishostname);
+                strcpy(msg.hostname, thishostname.c_str());
                 msg.type = QUERY_SUCCEEDED;
 
                 list<struct message>::iterator it;
@@ -98,12 +99,12 @@ void query_internal(struct message *request)
                 {
                     if((*it).type != QUERY_INTERNAL_RESPONSE)
                     {
-                        cout << "Got message of type: " << (*it)->type << " instead of QUERY_INTERNAL_RESPONSE" << endl;
+                        cout << "Got message of type: " << (*it).type << " instead of QUERY_INTERNAL_RESPONSE" << endl;
                         continue;
                     }
                     
                     /* Copy the hostname as the msssage */
-                    strcpy(msg.message, (*it).hostname);
+                    strcpy((char*)msg.message,(*it).hostname);
                     
                     /* Copy the signature as the object */
                     memcpy(msg.argument, (*it).argument, (*it).arg_length);
@@ -121,7 +122,7 @@ void query_internal(struct message *request)
             {
                 /* Send a query failed message back */
                 struct message msg;
-                strcpy(msg.hostname, thishostname);
+                strcpy(msg.hostname, thishostname.c_str());
                 msg.type = QUERY_FAILED;
 
                 /* Send the message out */

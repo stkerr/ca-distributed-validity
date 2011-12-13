@@ -1,9 +1,13 @@
 #include "support.h"
 #include "networking.h"
 
+#include <stdio.h>
 #include <fstream>
 #include <list>
 #include <string>
+
+#include <openssl/crypto.h>
+#include <openssl/pem.h>
 
 string thishostname;
 
@@ -52,4 +56,25 @@ void write_to_file(string message)
     }
     else
         cout << "Unable to open file " << string("files/").append(findhostname()).append(".received") << endl;
+}
+
+/*
+ * Makes a temporary file to hold the contents of a public key
+ * and returns the corresponding RSA 
+ */
+RSA* convert_to_RSA(unsigned char* data, int length)
+{
+    FILE* fp = fopen((string("tempfile.")+thishostname).c_str(), "w+");
+    fwrite(data, sizeof(unsigned char), length, fp);
+    fseek(fp, 0, SEEK_SET);
+    
+    RSA* new_rsa = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
+    if(new_rsa == NULL)
+    {
+        cout << "Error reading private key from " << (string("tempfile.")+thishostname) << endl;
+    }
+    
+    fclose(fp);
+    
+    return new_rsa;
 }
