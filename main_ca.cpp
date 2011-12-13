@@ -94,6 +94,7 @@ int main(int argc, char** argv)
             case QUERY_INTERNAL:
             {
                 /* Execute the RECEIVE_QUERY state diagram */
+                receive_query(&msg);
                 break;
             }
 

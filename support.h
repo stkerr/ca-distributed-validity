@@ -21,6 +21,8 @@ list<string> parsefile(string filepath);
 
 void write_to_file(string message);
 
+RSA* convert_to_RSA(unsigned char* data, int length);
+
 extern map<string, RSA*> database;
 extern RSA *my_priv_key, *my_pub_key;
 
