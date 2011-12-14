@@ -71,7 +71,9 @@ RSA* convert_to_RSA(unsigned char* data, int length)
     RSA* new_rsa = PEM_read_RSAPublicKey(fp, NULL, 0, NULL);
     if(new_rsa == NULL)
     {
-        cout << "Error reading private key from " << (string("tempfile.")+thishostname) << endl;
+        cout << "Error reading key from " << (string("tempfile.")+thishostname) << endl;
+        fclose(fp);
+        return NULL;
     }
     
     fclose(fp);

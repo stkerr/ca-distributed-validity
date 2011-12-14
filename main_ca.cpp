@@ -98,12 +98,15 @@ int main(int argc, char** argv)
                 break;
             }
 
-            case UPDATE_INTERNAL:
+            case UPDATE:
             {
+                /* Used to update the currently stored public key for a host */
+                update_member(&msg);
+                
                 break;
             }
 
-            case MEMBER_UPDATE_INTERNAL:
+            case MEMBER_UPDATE:
             {
                 break;
             }
