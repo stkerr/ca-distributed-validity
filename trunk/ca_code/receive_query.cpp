@@ -17,9 +17,24 @@ void receive_query(struct message *request)
         {
             case 1:
             {
+                /* Recover the public key we were provided */
                 pub_key = convert_to_RSA(request->message, request->length);
 
                 /* Verify the signature */
+                unsigned char hash[20], *sig;
+                unsigned int siglen;
+                SHA1(request->message, request->length, hash);
+                int ret = RSA_verify(NID_sha1, hash, 20, request->argument, request->arg_length, pub_key);
+                if(ret != 1)
+                {
+                    cout << "RSA_verify() was not 1!" << endl;
+                    unsigned long err = ERR_get_error();
+                    cout << "    Error code was: " << err << endl;
+                    cout << ERR_error_string(err, NULL);
+                    
+                    state = 0;
+                    break;
+                }
                 //ret = RSA_verify(NID_sha1, hash, 20, sig, siglen, r);
 
                 /* Advance states */
@@ -66,10 +81,24 @@ void receive_query(struct message *request)
                 if (!SHA1(request->message, request->length, hash))
                 {
                     cout << "SHA-1 failed!" << endl;
+                    state = 0;
+                    
+                    break;
                 }
                 
-                RSA_sign(NID_sha1, hash, 20, signed_data, signed_length, my_priv_key);
-
+                int ret = RSA_sign(NID_sha1, hash, 20, signed_data, signed_length, my_priv_key);
+                if(ret != 1)
+                {
+                    cout << "RSA_sign() was not 1!" << endl;
+                    unsigned long err = ERR_get_error();
+                    cout << "    Error code was: " << err << endl;
+                    cout << ERR_error_string(err, NULL);
+                    
+                    state = 0;
+                    
+                    break;
+                }
+                
                 struct message msg;
                 msg.type = QUERY_INTERNAL_RESPONSE;
                 strcpy(msg.hostname, thishostname.c_str());

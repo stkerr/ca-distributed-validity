@@ -12,6 +12,7 @@ using namespace std;
 
 #include <openssl/pem.h>
 #include <openssl/crypto.h>
+#include <openssl/err.h>
 
 #include "message_management.h"
 #include "networking.h"
@@ -20,6 +21,7 @@ using namespace std;
 
 void query_internal(struct message *msg);
 void receive_query(struct message *msg);
+void update_member(struct message *msg);
 
 #endif	/* CA_CODE_H */
 

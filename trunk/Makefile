@@ -1,6 +1,6 @@
 ALL_OBJ=networking.o message_management.o support.o 
 
-CA_OBJ=ca_code/query_response.o ca_code/receive_query.o
+CA_OBJ=ca_code/query_response.o ca_code/receive_query.o ca_code/update.o
 
 all: ca client
 

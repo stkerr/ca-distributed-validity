@@ -32,21 +32,15 @@ enum MSG_TYPE
     QUERY_SUCCEEDED,    // <message, argument> => <sender, signed key>
     QUERY_FAILED,       // <message, argument> => <N/A, N/A>
     
-    UPDATE,
-    UPDATE_RESPONSE,
-    
-    MEMBER_UPDATE,
-    MEMBER_RESPONSE,
-    
     QUERY_INTERNAL,             // <message, argument> => <public key, signed key>
     QUERY_INTERNAL_RESPONSE,    // <message, argument> => <public key, signed key>
     
-    UPDATE_INTERNAL,
-    UPDATE_INTERNAL_RESPONSE,
-    MEMBER_UPDATE_INTERNAL,
-    MEMBER_UPDATE_INTERNAL_RESPONSE,
-    QUERY_RECEIVED_INTERNAL,
-    QUERY_RECEIVED_RESPONSE
+    UPDATE,             // <message, argument> => <member name, new key>
+    UPDATE_RESPONSE,    // <message, argument> => <ACK, N/A>
+    
+    MEMBER_UPDATE,      // <message, argument> => <member name, public key>
+    MEMBER_RESPONSE,    // <message, argument> => <ACK, N/A>
+    
 };
         
 struct message {
