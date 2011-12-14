@@ -12,11 +12,16 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    if (argc != 5)
+    if (argc != 5 && argc != 6)
     {
-        cout << "Usage: " << argv[0] << " -port PORT -hostfile hostfile" << endl;
+        cout << "Usage: " << argv[0] << " -port PORT -hostfile hostfile [-malicious]" << endl;
     }
 
+    if(argc == 6 && strcmp(argv[5],"-malicious")==0)
+    {
+        cout << "I am malicious, I will drop all communication and exit." << endl;
+    }
+    
     if (strcmp(argv[1], "-port") != 0)
     {
         std::cout << "Enter the port!" << std::endl;
@@ -48,7 +53,7 @@ int main(int argc, char** argv)
     {
         cout << "N: " << hosts.size() << endl;
         cout << "N = 2F + 2 => " << floor((hosts.size()-2)/2.0) << endl;
-        F = (int)floor((hosts.size()-2)/2.0);
+        F = (int)floor((hosts.size()-1)/2.0);
     }
 
     /* Get this processes host name */

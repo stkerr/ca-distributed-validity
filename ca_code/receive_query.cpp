@@ -48,7 +48,7 @@ void receive_query(struct message *request)
 
                 if (temp == database.end())
                 {
-                    cout << "Could not locate host " << request->hostname << endl;
+                    cout << "Could not locate host " << request->hostname << " RSA* entry " << endl;
                     return;
                 }
 
@@ -74,6 +74,7 @@ void receive_query(struct message *request)
             }
             case 3:
             {
+                cout << "I am voting yes" << endl;
                 /* Sign the public key that we found */
                 unsigned char *signed_data; // (K_pub)_C
                 unsigned int *signed_length;
@@ -121,6 +122,7 @@ void receive_query(struct message *request)
             }
             case 4:
             {
+                cout << "I am voting no. " << endl;
                 /* This a no vote, so just timeout here */
 
                 /* Exit the loop */
